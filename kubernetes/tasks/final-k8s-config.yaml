@@ -48,10 +48,10 @@
 
 - name: console the content
   debug: 
-    var: kubeadm_init_output
+    var: kubeadm_init_output.stdout_lines
 
 - name: Copy the output to the file
   ansible.builtin.copy:
-    content: kubeadm_init_output
-    dest: ./
+    content: "{{ kubeadm_init_output.stdout_lines }}"
+    dest: /home/k8sConf.txt
     follow: yes
