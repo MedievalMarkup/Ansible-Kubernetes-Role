@@ -1,0 +1,34 @@
+---
+# tasks file for kubernetes
+
+- name: Update apt caches
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Add Kubernetes APT repository key
+  ansible.builtin.apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: Add Kubernetes APT repository
+  ansible.builtin.apt_repository:
+    repo: "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+    state: present
+
+- name: Install Kubernetes components
+  ansible.builtin.apt:
+    name:
+      - kubeadm
+      - kubelet
+      - kubectl
+      - kubernetes-cni
+    register: command_register
+
+- name: Call the configurations if above installed
+  include_tasks: final-k8s-config.yaml
+  when: command_register.changed
+
+
+
+
+ 

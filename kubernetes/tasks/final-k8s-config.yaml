@@ -1,0 +1,47 @@
+---
+# tasks file for kubernetes
+
+- name: Disable SWAP since kubernetes can't work with swap enabled (1/2)
+  ansible.builtin.shell: |
+    swapoff -a
+
+- name: Disable SWAP in fstab since kubernetes can't work with swap enabled (2/2)
+  ansible.builtin.replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+    replace: '# \1'
+
+- name: Add the br_netfilter kerner module support for network filtering and packet manipulation for network bridges.
+  community.general.modprobe:
+    name: br_netfilter
+    state: present
+
+- name: Keeping the kernel parameter that controls whether the kernel should forward IP packets between network interfaces.
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: true
+
+  #bridge networking, iptables
+- name: This parameter controls whether packets that pass through a network bridge should be handed off to iptables for additional processing.
+  ansible.posix.sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: '1'
+    sysctl_set: true
+
+- name: This parameter controls whether ip6 packets that pass through a network bridge should be handed off to iptables for additional processing.
+  ansible.posix.sysctl:
+    name: net.bridge.bridge-nf-call-ip6tables
+    value: '1'
+    sysctl_set: true
+
+- name: This parameter controls whether ip6 packets that pass through a network bridge should be handed off to iptables for additional processing.
+  ansible.posix.sysctl:
+    name: net.bridge.bridge-nf-call-ip6tables
+    value: '1'
+    sysctl_set: true
+
+- name: kubeadm init
+  ansible.builtin.shell: 
+    cmd: sudo kubeadm init --pod-network-cidr={{ kubernetes_master.launch_ip  }}
+  register: kubeadm_init_output

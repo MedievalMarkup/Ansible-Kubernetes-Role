@@ -1,0 +1,17 @@
+---
+# tasks file for kubernetes
+
+- name: Debug Message on the iteration
+  debug:
+    msg: "Iterating over {{ kubernetes_master.launch_ip }}"
+  when: ansible_distribution == "Ubuntu"
+
+- name: Check the distribution then call relevant containerd tasks
+  include_tasks: containerd.yaml
+  when: ansible_distribution == "Ubuntu"
+  with_items: "{{ kubernetes_master.launch_ip }}"
+
+
+
+
+

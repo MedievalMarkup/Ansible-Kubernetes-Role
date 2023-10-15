@@ -1,0 +1,64 @@
+---
+# tasks file for kubernetes
+
+- name: Update apt caches
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install dependencies before containerd
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+
+- name: Add Docker APT repository key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker APT repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
+
+- name: Install containerd
+  ansible.builtin.apt:
+    name: containerd.io
+    state: present
+
+- name: adding containerd directory
+  ansible.builtin.file:
+    path: /etc/containerd
+    state: directory
+
+- name: Create containerd configuration
+  ansible.builtin.shell: >
+    sudo containerd config default | sudo tee /etc/containerd/config.toml
+  register: containerd_configuration_output
+
+- name: Replace SystemdCgroup=false to SystemdCgroup=true
+  ansible.builtin.lineinfile:
+    path: /etc/containerd/config.toml
+    search_string: '            SystemdCgroup = false'
+    line: '            SystemdCgroup = true'
+    owner: root
+    group: root
+
+- name: Restart service containerd - after all above tasks
+  ansible.builtin.systemd_service:
+    state: restarted
+    daemon_reload: true
+    name: containerd
+
+- name: Understanding about the containerd 
+  ansible.builtin.service_facts:
+
+- name: Check if Containerd service is running
+  include_tasks: k8s-release.yaml
+  when: ansible_facts.services['containerd.service'].state == 'running'
+
+
+
+
