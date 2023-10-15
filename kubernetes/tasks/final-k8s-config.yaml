@@ -43,5 +43,15 @@
 
 - name: kubeadm init
   ansible.builtin.shell: 
-    cmd: sudo kubeadm init --pod-network-cidr={{ kubernetes_master.launch_ip  }}
+    cmd: sudo kubeadm init --pod-network-cidr={{ item }}
   register: kubeadm_init_output
+
+- name: console the content
+  debug: 
+    var: kubeadm_init_output
+
+- name: Copy the output to the file
+  ansible.builtin.copy:
+    content: kubeadm_init_output
+    dest: ./
+    follow: yes

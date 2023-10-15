@@ -1,15 +1,27 @@
 ---
 # tasks file for kubernetes
 
+#In Ansible versions 2.5 and later, the with_items loop syntax has been replaced with loop and loop_control.
+
+# - name: Debug Message on the iteration
+#   debug:
+#     msg: "Iterating over {{ kubernetes_master.launch_ip }}"
+#   when: ansible_distribution == "Ubuntu"
+
 - name: Debug Message on the iteration
   debug:
-    msg: "Iterating over {{ kubernetes_master.launch_ip }}"
+    msg: "Iterating over {{ item }}"
+  loop: "{{ kubernetes_master.launch_ip }}"
+  loop_control:
+    label: "{{ item }}"
   when: ansible_distribution == "Ubuntu"
 
 - name: Check the distribution then call relevant containerd tasks
   include_tasks: containerd.yaml
+  loop: "{{ kubernetes_master.launch_ip }}"
+  loop_control:
+    label: "{{ item }}"
   when: ansible_distribution == "Ubuntu"
-  with_items: "{{ kubernetes_master.launch_ip }}"
 
 
 
