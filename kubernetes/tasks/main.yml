@@ -8,19 +8,19 @@
 #     msg: "Iterating over {{ kubernetes_master.launch_ip }}"
 #   when: ansible_distribution == "Ubuntu"
 
-- name: Debug Message on the iteration
-  debug:
-    msg: "Iterating over {{ item }}"
-  loop: "{{ kubernetes_master.launch_ip }}"
-  loop_control:
-    label: "{{ item }}"
-  when: ansible_distribution == "Ubuntu"
+# - name: Debug Message on the iteration
+#   debug:
+#     msg: "Iterating over {{ item }}"
+#   loop: "{{ kubernetes_master.launch_ip }}"
+#   loop_control:
+#     label: "{{ item }}"
+#   when: ansible_distribution == "Ubuntu"
 
 - name: Check the distribution then call relevant containerd tasks
   include_tasks: containerd.yaml
-  loop: "{{ kubernetes_master.launch_ip }}"
-  loop_control:
-    label: "{{ item }}"
+  # loop: "{{ kubernetes_master.launch_ip }}"
+  # loop_control:
+  #   label: "{{ item }}"
   when: ansible_distribution == "Ubuntu"
 
 
