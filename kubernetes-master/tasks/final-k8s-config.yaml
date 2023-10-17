@@ -56,6 +56,12 @@
     dest: /home/k8sConf.json
     follow: yes
 
+- name: Copy the file to the worker node 
+  ansible.builtin.copy:
+    path: /home/k8sConf.json
+    dest: /home/k8sConf.json
+    follow: yes
+
 - name: Create a .Kube directory if it does not exist
   ansible.builtin.file:
     path: $HOME/.kube

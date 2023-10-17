@@ -41,9 +41,18 @@
     value: '1'
     sysctl_set: true
 
+- name: fetch token
+  ansible.builtin.shell: >
+    awk '/--token/ {print $5}' /home/k8sConf.json
+  register: kubeadm_token
+
+- name: fetch hash
+  ansible.builtin.shell: >
+    awk '/sha256:/ {print $2}' /home/k8sConf.json
+  register: kubeadm_hash
+
 - name: Join master node
   ansible.builtin.shell: >
-    
-    kubeadm join {{ kubernetes_master.launch_ip[0] }}:6443 --token {{  }} --discovery-token-ca-cert-hash sha256:{{  }}
+    kubeadm join {{ kubernetes_master.launch_ip[0] }}:6443 --token {{ kubeadm_token }} --discovery-token-ca-cert-hash {{ kubeadm_hash }}
   register: containerd_configuration_output
 
