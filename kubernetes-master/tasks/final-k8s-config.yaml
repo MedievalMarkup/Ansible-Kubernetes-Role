@@ -77,7 +77,11 @@
 
 - name: Install Calico for CNI
   ansible.builtin.uri:
-    url: 'https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/calico.yaml'
+    url: '{{ kubernetes_master.calicoFile }}'
     method: GET
-  register: result
+    dest: /home
 
+- name: Create a Deployment by reading the definition from a local file
+  kubernetes.core.k8s:
+    state: present
+    src: /home/calico.yaml
