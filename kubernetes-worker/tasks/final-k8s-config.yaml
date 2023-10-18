@@ -41,6 +41,12 @@
     value: '1'
     sysctl_set: true
 
+- name: Retrieve facts from the control node
+  ansible.builtin.fetch:
+    src: /home/k8sConf.json
+    dest: /home/k8sConf.json
+  delegate_to: localhost
+
 - name: fetch token
   ansible.builtin.shell: >
     awk '/--token/ {print $5}' /home/k8sConf.json
@@ -55,4 +61,6 @@
   ansible.builtin.shell: >
     kubeadm join {{ kubernetes_master.launch_ip[0] }}:6443 --token {{ kubeadm_token }} --discovery-token-ca-cert-hash {{ kubeadm_hash }}
   register: containerd_configuration_output
+
+
 

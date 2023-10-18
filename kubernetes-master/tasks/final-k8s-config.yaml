@@ -55,12 +55,13 @@
     content: "{{ kubeadm_init_output.stdout_lines | to_json(indent=4, sort_keys=True) }}"
     dest: /home/k8sConf.json
     follow: yes
+  delegate_to: localhost
 
-- name: Copy the file to the worker node 
-  ansible.builtin.copy:
-    path: /home/k8sConf.json
-    dest: /home/k8sConf.json
-    follow: yes
+# - name: setting the facts for token
+#   ansible.builtin.set_fact:
+#     kubeadm_token: kubeadm_token
+#     kubeadm_hash: kubeadm_hash
+#     cacheable: yes
 
 - name: Create a .Kube directory if it does not exist
   ansible.builtin.file:
@@ -73,3 +74,10 @@
     dest: $HOME/.kube/config
     owner: root
     group: root
+
+- name: Install Calico for CNI
+  ansible.builtin.uri:
+    url: 'https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/calico.yaml'
+    method: GET
+  register: result
+
