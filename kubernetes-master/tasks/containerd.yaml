@@ -26,7 +26,7 @@
 - name: Install containerd
   ansible.builtin.apt:
     name: containerd.io
-    state: present
+    state: latest
 
 - name: adding containerd directory
   ansible.builtin.file:
