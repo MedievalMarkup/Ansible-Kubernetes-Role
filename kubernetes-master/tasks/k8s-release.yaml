@@ -22,7 +22,7 @@
       - kubelet
       - kubectl
       - kubernetes-cni
-    register: command_register
+  register: command_register
 
 - name: Call the configurations if above installed
   include_tasks: final-k8s-config.yaml
