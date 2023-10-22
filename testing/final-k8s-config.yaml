@@ -11,9 +11,14 @@
     regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
     replace: '# \1'
 
-- name: Add the br_netfilter kerner module support for network filtering and packet manipulation for network bridges.
+- name: Add the br_netfilter kernel module support for network filtering and packet manipulation for network bridges.
   community.general.modprobe:
     name: br_netfilter
+    state: present
+
+- name: Add the overlay kernel module, Kubernetes) uses an Overlay file system to manage the layers of pre-built container distribution images.
+  community.general.modprobe:
+    name: overlay
     state: present
 
 - name: Keeping the kernel parameter that controls whether the kernel should forward IP packets between network interfaces.
