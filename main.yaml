@@ -1,4 +1,21 @@
 ---
-- hosts: localhost
+
+- name: Root Playbook calling master node ROLE
+  hosts: ubuntu-master
+  # tasks:
+  #   - name: Task 1 (part of the first role)
+  #     # Define your tasks for the first role here
+  #     # ...
   roles:
-    - kubernetes-master
+    - role: kubernetes-master
+      when: not skipped
+
+- name: Root Playbook calling worker node ROLE
+  hosts: ubuntu-worker
+  # tasks:
+  #   - name: Task 1 (part of the first role)
+  #     # Define your tasks for the first role here
+  #     # ...
+  roles:
+    - role: kubernetes-worker
+      when: not skipped
