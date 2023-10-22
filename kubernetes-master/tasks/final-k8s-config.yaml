@@ -16,6 +16,11 @@
     name: br_netfilter
     state: present
 
+- name: Add the overlay kernel module, Kubernetes) uses an Overlay file system to manage the layers of pre-built container distribution images.
+  community.general.modprobe:
+    name: overlay
+    state: present
+
 - name: Keeping the kernel parameter that controls whether the kernel should forward IP packets between network interfaces.
   ansible.posix.sysctl:
     name: net.ipv4.ip_forward
